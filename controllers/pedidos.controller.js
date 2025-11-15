@@ -1,120 +1,249 @@
 import PedidosService from "../services/pedidos.service.js";
 
 const getPedidos = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
-        Recordar que para cumplir con toda la funcionalidad deben:
-
-            1. Utilizar el servicio de pedidos para obtener todos los pedidos
-            2. Devolver un json con los pedidos (status 200)
-            3. Devolver un mensaje de error si algo falló (status 500)
+    try {
+        // 1. Utilizar el servicio de pedidos para obtener todos los pedidos
+        const pedidos = await PedidosService.getPedidos();
         
-    */
+        // 2. Devolver un json con los pedidos (status 200)
+        res.status(200).json(pedidos);
+    } catch (error) {
+        // 3. Devolver un mensaje de error si algo falló (status 500)
+        res.status(500).json({ message: error.message });
+    }
 };
 
 const getPedidosByUser = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
-        Recordar que para cumplir con toda la funcionalidad deben:
-
-            1. Utilizar el servicio de pedidos para obtener los pedidos del usuario
-            2. Si el usuario no tiene pedidos, devolver una lista vacía (status 200)
-            3. Si el usuario tiene pedidos, devolver un json con los pedidos (status 200)
-            4. Devolver un mensaje de error si algo falló (status 500)
+    try {
+        // 1. Obtener id del usuario desde el token (agregado por el middleware)
+        const idUsuario = req.usuario.id;
         
-    */
+        // 2. Utilizar el servicio de pedidos para obtener los pedidos del usuario
+        const pedidos = await PedidosService.getPedidosByUser(idUsuario);
+        
+        // 3. Devolver los pedidos (puede ser lista vacía)
+        res.status(200).json(pedidos);
+    } catch (error) {
+        // 4. Devolver un mensaje de error si algo falló (status 500)
+        res.status(500).json({ message: error.message });
+    }
 };
 
 const getPedidoById = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
-        Recordar que para cumplir con toda la funcionalidad deben:
-
-            1. Utilizar el servicio de pedidos para obtener el pedido por id (utilizando el id recibido en los parámetros de la request)
-            2. Si el pedido no existe, devolver un mensaje de error (status 404)
-            3. Si el pedido existe, devolver un json con el pedido (status 200)
-            4. Devolver un mensaje de error si algo falló (status 500)
+    try {
+        // 1. Obtener id de los parámetros de la request
+        const { id } = req.params;
         
-    */
+        if (!id) {
+            return res.status(400).json({ message: "ID del pedido es requerido" });
+        }
+
+        // 2. Utilizar el servicio de pedidos para obtener el pedido por id
+        const pedido = await PedidosService.getPedidoById(id);
+        
+        // 3. Si el pedido no existe, devolver un mensaje de error (status 404)
+        if (!pedido) {
+            return res.status(404).json({ message: "Pedido no encontrado" });
+        }
+        
+        // 4. Si el pedido existe, devolver un json con el pedido (status 200)
+        res.status(200).json(pedido);
+    } catch (error) {
+        // 5. Devolver un mensaje de error si algo falló (status 500)
+        res.status(500).json({ message: error.message });
+    }
 };
 
 const createPedido = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
-        Recordar que para cumplir con toda la funcionalidad deben:
-
-            1. Verificar que el body de la request tenga el campo platos
-            2. Verificar que el campo productos sea un array
-            3. Verificar que el array de productos tenga al menos un producto
-            4. Verificar que todos los productos tengan un id y una cantidad
-            5. Si algo de lo anterior no se cumple, devolver un mensaje de error (status 400)
-            6. Crear un pedido con los productos recibidos y el id del usuario (utilizando el servicio de pedidos)
-            7. Devolver un mensaje de éxito (status 201)
-            8. Devolver un mensaje de error si algo falló (status 500)
+    try {
+        // 1. Verificar que el body de la request tenga el campo platos
+        const { platos } = req.body;
         
-    */
+        if (!platos) {
+            return res.status(400).json({ message: "El campo 'platos' es requerido" });
+        }
+        
+        // 2. Verificar que el campo platos sea un array
+        if (!Array.isArray(platos)) {
+            return res.status(400).json({ message: "El campo 'platos' debe ser un array" });
+        }
+        
+        // 3. Verificar que el array de platos tenga al menos un producto
+        if (platos.length === 0) {
+            return res.status(400).json({ message: "Debe incluir al menos un plato en el pedido" });
+        }
+        
+        // 4. Verificar que todos los platos tengan un id y una cantidad
+        for (const plato of platos) {
+            if (!plato.id || !plato.cantidad) {
+                return res.status(400).json({ 
+                    message: "Cada plato debe tener 'id' y 'cantidad'" 
+                });
+            }
+            
+            if (plato.cantidad <= 0) {
+                return res.status(400).json({ 
+                    message: "La cantidad de cada plato debe ser mayor a 0" 
+                });
+            }
+        }
+        
+        // 5. Obtener id del usuario desde el token
+        const idUsuario = req.usuario.id;
+        
+        // 6. Crear un pedido con los productos recibidos y el id del usuario
+        const nuevoPedido = await PedidosService.createPedido(idUsuario, platos);
+        
+        // 7. Devolver un mensaje de éxito (status 201)
+        res.status(201).json({
+            message: "Pedido creado exitosamente",
+            pedido: nuevoPedido
+        });
+    } catch (error) {
+        // 8. Devolver un mensaje de error si algo falló (status 500)
+        if (error.message.includes("no existe")) {
+            return res.status(400).json({ message: error.message });
+        }
+        res.status(500).json({ message: error.message });
+    }
 };
 
 const aceptarPedido = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
-        Recordar que para cumplir con toda la funcionalidad deben:
-
-            1. Utilizar el servicio de pedidos para obtener el pedido por id (utilizando el id recibido en los parámetros de la request)
-            2. Si el pedido no existe, devolver un mensaje de error (status 404)
-            3. Si el pedido existe, verificar que el pedido esté en estado "pendiente"
-            4. Si el pedido no está en estado "pendiente", devolver un mensaje de error (status 400)
-            5. Si el pedido está en estado "pendiente", actualizar el estado del pedido a "aceptado"
-            6. Devolver un mensaje de éxito (status 200)
-            7. Devolver un mensaje de error si algo falló (status 500)
+    try {
+        const { id } = req.params;
         
-    */
+        if (!id) {
+            return res.status(400).json({ message: "ID del pedido es requerido" });
+        }
+        
+        // 1. Obtener el pedido por id
+        const pedido = await PedidosService.getPedidoById(id);
+        
+        // 2. Si el pedido no existe, devolver un mensaje de error (status 404)
+        if (!pedido) {
+            return res.status(404).json({ message: "Pedido no encontrado" });
+        }
+        
+        // 3. Verificar que el pedido esté en estado "pendiente"
+        if (pedido.estado !== "pendiente") {
+            return res.status(400).json({ 
+                message: `No se puede aceptar un pedido en estado '${pedido.estado}'` 
+            });
+        }
+        
+        // 4. Actualizar el estado del pedido a "aceptado"
+        const pedidoActualizado = await PedidosService.updatePedido(id, "aceptado");
+        
+        // 5. Devolver un mensaje de éxito (status 200)
+        res.status(200).json({
+            message: "Pedido aceptado exitosamente",
+            pedido: pedidoActualizado
+        });
+    } catch (error) {
+        // 6. Devolver un mensaje de error si algo falló (status 500)
+        res.status(500).json({ message: error.message });
+    }
 };
 
 const comenzarPedido = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
-        Recordar que para cumplir con toda la funcionalidad deben:
-
-            1. Utilizar el servicio de pedidos para obtener el pedido por id (utilizando el id recibido en los parámetros de la request)
-            2. Si el pedido no existe, devolver un mensaje de error (status 404)
-            3. Si el pedido existe, verificar que el pedido esté en estado "aceptado"
-            4. Si el pedido no está en estado "aceptado", devolver un mensaje de error (status 400)
-            5. Si el pedido está en estado "aceptado", actualizar el estado del pedido a "en camino"
-            6. Devolver un mensaje de éxito (status 200)
-            7. Devolver un mensaje de error si algo falló (status 500)
+    try {
+        const { id } = req.params;
         
-    */
+        if (!id) {
+            return res.status(400).json({ message: "ID del pedido es requerido" });
+        }
+        
+        // 1. Obtener el pedido por id
+        const pedido = await PedidosService.getPedidoById(id);
+        
+        // 2. Si el pedido no existe, devolver un mensaje de error (status 404)
+        if (!pedido) {
+            return res.status(404).json({ message: "Pedido no encontrado" });
+        }
+        
+        // 3. Verificar que el pedido esté en estado "aceptado"
+        if (pedido.estado !== "aceptado") {
+            return res.status(400).json({ 
+                message: `No se puede comenzar un pedido en estado '${pedido.estado}'` 
+            });
+        }
+        
+        // 4. Actualizar el estado del pedido a "en camino"
+        const pedidoActualizado = await PedidosService.updatePedido(id, "en camino");
+        
+        // 5. Devolver un mensaje de éxito (status 200)
+        res.status(200).json({
+            message: "Pedido comenzado exitosamente",
+            pedido: pedidoActualizado
+        });
+    } catch (error) {
+        // 6. Devolver un mensaje de error si algo falló (status 500)
+        res.status(500).json({ message: error.message });
+    }
 };
 
 const entregarPedido = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
-        Recordar que para cumplir con toda la funcionalidad deben:
-
-            1. Utilizar el servicio de pedidos para obtener el pedido por id (utilizando el id recibido en los parámetros de la request)
-            2. Si el pedido no existe, devolver un mensaje de error (status 404)
-            3. Si el pedido existe, verificar que el pedido esté en estado "en camino"
-            4. Si el pedido no está en estado "en camino", devolver un mensaje de error (status 400)
-            5. Si el pedido está en estado "en camino", actualizar el estado del pedido a "entregado"
-            6. Devolver un mensaje de éxito (status 200)
-            7. Devolver un mensaje de error si algo falló (status 500)
+    try {
+        const { id } = req.params;
         
-    */
+        if (!id) {
+            return res.status(400).json({ message: "ID del pedido es requerido" });
+        }
+        
+        // 1. Obtener el pedido por id
+        const pedido = await PedidosService.getPedidoById(id);
+        
+        // 2. Si el pedido no existe, devolver un mensaje de error (status 404)
+        if (!pedido) {
+            return res.status(404).json({ message: "Pedido no encontrado" });
+        }
+        
+        // 3. Verificar que el pedido esté en estado "en camino"
+        if (pedido.estado !== "en camino") {
+            return res.status(400).json({ 
+                message: `No se puede entregar un pedido en estado '${pedido.estado}'` 
+            });
+        }
+        
+        // 4. Actualizar el estado del pedido a "entregado"
+        const pedidoActualizado = await PedidosService.updatePedido(id, "entregado");
+        
+        // 5. Devolver un mensaje de éxito (status 200)
+        res.status(200).json({
+            message: "Pedido entregado exitosamente",
+            pedido: pedidoActualizado
+        });
+    } catch (error) {
+        // 6. Devolver un mensaje de error si algo falló (status 500)
+        res.status(500).json({ message: error.message });
+    }
 };
 
 const deletePedido = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
-        Recordar que para cumplir con toda la funcionalidad deben:
-
-            1. Utilizar el servicio de pedidos para obtener el pedido por id (utilizando el id recibido en los parámetros de la request)
-            2. Si el pedido no existe, devolver un mensaje de error (status 404)
-            3. Si el pedido existe, eliminar el pedido
-            4. Devolver un mensaje de éxito (status 200)
-            5. Devolver un mensaje de error si algo falló (status 500)
+    try {
+        const { id } = req.params;
         
-    */
+        if (!id) {
+            return res.status(400).json({ message: "ID del pedido es requerido" });
+        }
+        
+        // 1. Obtener el pedido por id para verificar que existe
+        const pedido = await PedidosService.getPedidoById(id);
+        
+        // 2. Si el pedido no existe, devolver un mensaje de error (status 404)
+        if (!pedido) {
+            return res.status(404).json({ message: "Pedido no encontrado" });
+        }
+        
+        // 3. Eliminar el pedido
+        const resultado = await PedidosService.deletePedido(id);
+        
+        // 4. Devolver un mensaje de éxito (status 200)
+        res.status(200).json({ message: "Pedido eliminado exitosamente" });
+    } catch (error) {
+        // 5. Devolver un mensaje de error si algo falló (status 500)
+        res.status(500).json({ message: error.message });
+    }
 };
 
 export default {

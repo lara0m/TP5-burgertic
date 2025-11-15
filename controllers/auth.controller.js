@@ -3,39 +3,94 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const register = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
+    try {
+        // 1. Verificar que el body de la request tenga los datos necesarios
+        const { nombre, apellido, email, password } = req.body;
 
-        Recordar que para cumplir con toda la funcionalidad deben:
+        // 2. Verificar que todos los campos requeridos estén presentes
+        if (!nombre || !apellido || !email || !password) {
+            return res.status(400).json({ 
+                message: "Todos los campos son requeridos: nombre, apellido, email, password" 
+            });
+        }
 
-            1. Verificar que el body de la request tenga el campo usuario
-            2. Verificar que el campo usuario tenga los campos nombre, apellido, email y password
-            3. Verificar que no exista un usuario con el mismo email (utilizando el servicio de usuario)
-            4. Devolver un mensaje de error si algo falló hasta el momento (status 400)
-            5. Hashear la contraseña antes de guardarla en la base de datos
-            6. Guardar el usuario en la base de datos (utilizando el servicio de usuario)
-            7. Devolver un mensaje de éxito si todo salió bien (status 201)
-            8. Devolver un mensaje de error si algo falló guardando al usuario (status 500)
-        
-    */
+        // 3. Verificar formato de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: "Formato de email inválido" });
+        }
+
+        // 4. Verificar longitud mínima de password
+        if (password.length < 6) {
+            return res.status(400).json({ message: "La contraseña debe tener al menos 6 caracteres" });
+        }
+
+        // 5. Crear el usuario (el servicio verifica si el email ya existe)
+        const nuevoUsuario = await UsuariosService.createUsuario({
+            nombre,
+            apellido,
+            email,
+            password
+        });
+
+        // 6. Devolver mensaje de éxito
+        res.status(201).json({ 
+            message: "Usuario registrado exitosamente",
+            usuario: nuevoUsuario
+        });
+
+    } catch (error) {
+        if (error.message.includes("email ya está registrado")) {
+            return res.status(400).json({ message: error.message });
+        }
+        return res.status(500).json({ message: `Error interno del servidor: ${error.message}` });
+    }
 };
 
 const login = async (req, res) => {
-    // --------------- COMPLETAR ---------------
-    /*
+    try {
+        // 1. Verificar que el body tenga email y password
+        const { email, password } = req.body;
 
-        Recordar que para cumplir con toda la funcionalidad deben:
+        if (!email || !password) {
+            return res.status(400).json({ 
+                message: "Email y contraseña son requeridos" 
+            });
+        }
 
-            1. Verificar que el body de la request tenga el campo email y password
-            2. Buscar un usuario con el email recibido
-            3. Verificar que el usuario exista
-            4. Verificar que la contraseña recibida sea correcta
-            5. Devolver un mensaje de error si algo falló hasta el momento (status 400)
-            6. Crear un token con el id del usuario y firmarlo con la clave secreta (utilizando la librería jsonwebtoken)
-            7. Devolver un json con el usuario y el token (status 200)
-            8. Devolver un mensaje de error si algo falló (status 500)
-        
-    */
+        // 2. Buscar usuario por email
+        const usuario = await UsuariosService.getUsuarioByEmail(email);
+
+        // 3. Verificar que el usuario exista
+        if (!usuario) {
+            return res.status(400).json({ message: "Credenciales inválidas" });
+        }
+
+        // 4. Verificar que la contraseña sea correcta
+        const isPasswordValid = await UsuariosService.validatePassword(usuario, password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: "Credenciales inválidas" });
+        }
+
+        // 5. Crear token JWT con duración de 30 minutos
+        const token = jwt.sign(
+            { id: usuario.id },
+            process.env.JWT_SECRET,
+            { expiresIn: '30m' }
+        );
+
+        // 6. Devolver usuario (sin password) y token
+        const { password: _, ...usuarioSinPassword } = usuario.toJSON();
+
+        res.status(200).json({
+            message: "Login exitoso",
+            usuario: usuarioSinPassword,
+            token: token
+        });
+
+    } catch (error) {
+        return res.status(500).json({ message: `Error interno del servidor: ${error.message}` });
+    }
 };
 
 export default { register, login };
