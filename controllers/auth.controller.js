@@ -48,31 +48,44 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
+    console.log('🔐 LOGIN - Iniciando proceso de login');
+    console.log('📧 Email recibido:', req.body.email);
+    
     try {
         // 1. Verificar que el body tenga email y password
         const { email, password } = req.body;
 
         if (!email || !password) {
+            console.log('❌ Email o password faltantes');
             return res.status(400).json({ 
                 message: "Email y contraseña son requeridos" 
             });
         }
 
         // 2. Buscar usuario por email
+        console.log('🔍 Buscando usuario por email:', email);
         const usuario = await UsuariosService.getUsuarioByEmail(email);
 
         // 3. Verificar que el usuario exista
         if (!usuario) {
+            console.log('❌ Usuario no encontrado');
             return res.status(400).json({ message: "Credenciales inválidas" });
         }
+        
+        console.log('✅ Usuario encontrado:', { id: usuario.id, email: usuario.email, admin: usuario.admin });
 
         // 4. Verificar que la contraseña sea correcta
+        console.log('🔒 Verificando contraseña...');
         const isPasswordValid = await UsuariosService.validatePassword(usuario, password);
+        console.log('🔑 Contraseña válida:', isPasswordValid);
+        
         if (!isPasswordValid) {
+            console.log('❌ Contraseña incorrecta');
             return res.status(400).json({ message: "Credenciales inválidas" });
         }
 
         // 5. Crear token JWT con duración de 30 minutos
+        console.log('🎫 Creando token JWT...');
         const token = jwt.sign(
             { id: usuario.id },
             process.env.JWT_SECRET,
@@ -82,6 +95,7 @@ const login = async (req, res) => {
         // 6. Devolver usuario (sin password) y token
         const { password: _, ...usuarioSinPassword } = usuario.toJSON();
 
+        console.log('✅ Login exitoso para usuario:', usuarioSinPassword.email);
         res.status(200).json({
             message: "Login exitoso",
             usuario: usuarioSinPassword,
@@ -89,6 +103,7 @@ const login = async (req, res) => {
         });
 
     } catch (error) {
+        console.error('💥 ERROR en login:', error);
         return res.status(500).json({ message: `Error interno del servidor: ${error.message}` });
     }
 };

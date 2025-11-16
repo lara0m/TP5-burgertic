@@ -6,6 +6,12 @@ import { Pedido, PlatoXPedido } from "./pedidos.model.js";
 Usuario.hasMany(Pedido, { foreignKey: 'id_usuario', as: 'pedidos' });
 Pedido.belongsTo(Usuario, { foreignKey: 'id_usuario', as: 'usuario' });
 
+// Relaciones directas para PlatoXPedido
+PlatoXPedido.belongsTo(Pedido, { foreignKey: 'id_pedido', as: 'pedido' });
+PlatoXPedido.belongsTo(Plato, { foreignKey: 'id_plato', as: 'plato' });
+Pedido.hasMany(PlatoXPedido, { foreignKey: 'id_pedido', as: 'platosXPedido' });
+Plato.hasMany(PlatoXPedido, { foreignKey: 'id_plato', as: 'platosXPedido' });
+
 // Relación many-to-many entre Pedido y Plato a través de PlatoXPedido
 Pedido.belongsToMany(Plato, { 
     through: PlatoXPedido, 

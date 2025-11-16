@@ -1,0 +1,482 @@
+/* Admin Panel Styles */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.adminHeader {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3em;
+  margin-bottom: 10px;
+  color: #d32f2f;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle {
+  font-size: 1.2em;
+  color: #ffd700;
+  margin: 0;
+}
+
+.loading {
+  text-align: center;
+  padding: 100px 20px;
+  color: #ffd700;
+  font-size: 1.5em;
+}
+
+.error {
+  background-color: #fee;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 20px 0;
+  color: #721c24;
+  text-align: center;
+}
+
+/* Estilos para admin pedidos */
+.pedidosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.pedidoCard {
+  background: white;
+  border: 2px solid #d32f2f;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pedidoCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.pedidoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px dashed #d32f2f;
+}
+
+.pedidoInfo h3 {
+  margin: 0;
+  color: #d32f2f;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5em;
+}
+
+.usuario, .fecha {
+  margin: 5px 0;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.estadoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.estadoBadge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  letter-spacing: 1px;
+}
+
+.badge-pendiente {
+  background-color: #fbbf24;
+  color: #92400e;
+}
+
+.badge-aceptado {
+  background-color: #60a5fa;
+  color: #1e40af;
+}
+
+.badge-preparacion {
+  background-color: #f472b6;
+  color: #be185d;
+}
+
+.badge-listo {
+  background-color: #34d399;
+  color: #065f46;
+}
+
+.badge-default {
+  background-color: #9ca3af;
+  color: #374151;
+}
+
+.platosSection {
+  margin: 15px 0;
+}
+
+.platosSection h4 {
+  margin-bottom: 10px;
+  color: #d32f2f;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+.platosList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.platoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.platoItem:last-child {
+  border-bottom: none;
+}
+
+.platoNombre {
+  flex: 1;
+  font-weight: 500;
+}
+
+.platoCantidad {
+  color: #666;
+  margin: 0 10px;
+}
+
+.platoPrecio {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.total {
+  text-align: right;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px solid #d32f2f;
+  font-size: 1.1em;
+  color: #d32f2f;
+}
+
+.actionsSection {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 120px;
+}
+
+.actionBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-aceptar {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-aceptar:hover {
+  background-color: #2563eb;
+}
+
+.btn-comenzar {
+  background-color: #8b5cf6;
+  color: white;
+}
+
+.btn-comenzar:hover {
+  background-color: #7c3aed;
+}
+
+.btn-entregar {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-entregar:hover {
+  background-color: #059669;
+}
+
+.btnEliminar {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btnEliminar:hover {
+  background-color: #dc2626;
+}
+
+.noPedidos {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border: 2px dashed #d32f2f;
+  border-radius: 15px;
+  color: #666;
+  font-size: 1.2em;
+}
+
+/* Estilos para admin general */
+.adminNav {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.navBtn {
+  padding: 15px 30px;
+  background: linear-gradient(45deg, #d32f2f, #ff4444);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.navBtn:hover {
+  background: linear-gradient(45deg, #b71c1c, #d32f2f);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4);
+}
+
+.platosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.platoCard {
+  background: white;
+  border: 2px solid #d32f2f;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.platoCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.platoImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 2px solid #d32f2f;
+}
+
+.platoContent {
+  padding: 20px;
+}
+
+.platoName {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #d32f2f;
+  margin-bottom: 10px;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+.platoDescription {
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.platoFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.platoPrice {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #d32f2f;
+}
+
+.platoType {
+  background: #ffd700;
+  color: #1a1a1a;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.deleteBtn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.deleteBtn:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+}
+
+.formSection {
+  background: white;
+  border: 2px solid #d32f2f;
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.formTitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2em;
+  color: #d32f2f;
+  margin-bottom: 20px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.formInput, .formSelect, .formTextarea {
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  transition: border-color 0.2s ease;
+}
+
+.formInput:focus, .formSelect:focus, .formTextarea:focus {
+  outline: none;
+  border-color: #d32f2f;
+}
+
+.formTextarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.submitBtn {
+  background: linear-gradient(45deg, #d32f2f, #ff4444);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin-top: 20px;
+}
+
+.submitBtn:hover {
+  background: linear-gradient(45deg, #b71c1c, #d32f2f);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4);
+}
+
+@media (max-width: 768px) {
+  .pedidosGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .platosGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .main {
+    padding: 20px;
+  }
+  
+  .pedidoHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .estadoSection {
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+  
+  .actionsSection {
+    flex-direction: column;
+  }
+  
+  .actionBtn {
+    min-width: auto;
+  }
+  
+  .adminNav {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}

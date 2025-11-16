@@ -57,8 +57,16 @@ const createUsuario = async (usuario) => {
 
 const validatePassword = async (usuario, password) => {
     try {
-        return await bcryptjs.compare(password, usuario.password);
+        console.log('🔑 VALIDATE PASSWORD - Iniciando validación');
+        console.log('📝 Password plano recibido:', password);
+        console.log('🔒 Password hasheado en BD:', usuario.password);
+        
+        const isValid = await bcryptjs.compare(password, usuario.password);
+        console.log('✅ Resultado de bcrypt.compare:', isValid);
+        
+        return isValid;
     } catch (error) {
+        console.error('💥 Error en validatePassword:', error);
         throw new Error(`Error al validar password: ${error.message}`);
     }
 };

@@ -1,0 +1,20 @@
+:root{
+  --primary: #c62828; /* red */
+  --accent: #0d47a1; /* blue */
+  --bg: #fff6f6;
+  --text: #222;
+}
+
+body{ font-family: Arial, sans-serif; background: var(--bg); color:var(--text); margin:0 }
+.site-header{ display:flex; justify-content:space-between; align-items:center; padding:0.5rem 1rem; background:linear-gradient(90deg,var(--primary),var(--accent)); color:white }
+.site-header a{ color:white; margin-right:0.5rem; text-decoration:none }
+.brand a{ font-weight:700; font-size:1.2rem }
+main{ max-width:1000px; margin:1rem auto }
+.landing{ text-align:center; padding:2rem }
+.btn{ background:var(--primary); color:white; padding:0.5rem 1rem; text-decoration:none; border:none; cursor:pointer; border-radius:4px }
+.btn.secondary{ background:transparent; color:var(--primary); border:2px solid var(--primary) }
+.grid{ display:flex; gap:1rem; flex-wrap:wrap }
+.card{ background:white; padding:1rem; border-radius:6px; box-shadow:0 1px 4px rgba(0,0,0,0.08); width:220px }
+.error{ color: #b00020 }
+.link{ background:none; border:none; color:white; cursor:pointer }
+.danger{ background:#b71c1c }
