@@ -1,209 +1,265 @@
-# BurgerTIC API
+# 🍔 BurgerTIC - Sistema de Pedidos de Hamburguesas
 
-API REST para un sistema de pedidos de hamburguesas desarrollado con Node.js, Express, PostgreSQL y Sequelize.
+**Tema elegido:** Route 66 American Diner  
+**Tecnologías:** Node.js + Express + PostgreSQL + Next.js + JWT + Sequelize
 
-## Características
+---
 
-- ✅ Autenticación JWT con roles (Usuario/Admin)
-- ✅ CRUD completo de platos
-- ✅ Sistema de pedidos con estados
-- ✅ Middlewares de autenticación y autorización
-- ✅ Validaciones de datos
-- ✅ Manejo de errores robusto
-- ✅ Relaciones de base de datos con Sequelize
+## 🚀 **Instalación y Ejecución**
 
-## Tecnologías
-
-- **Backend**: Node.js, Express
-- **Base de datos**: PostgreSQL
-- **ORM**: Sequelize
-- **Autenticación**: JWT, bcryptjs
-- **Validación**: Middleware personalizado
-
-## Instalación
-
-### 1. Clonar el repositorio
+### **Prerequisitos**
 ```bash
-git clone <repository-url>
-cd TP5-burgertic
+Node.js (v18 o superior)
+npm o yarn
+Cuenta en Neon Database (PostgreSQL)
 ```
 
-### 2. Instalar dependencias
+### **1. Clonar y configurar Backend**
 ```bash
+cd TP5-burgertic
 npm install
 ```
 
-### 3. Configurar variables de entorno
-Copiar `.env.example` a `.env` y configurar:
-```bash
-cp .env.example .env
-```
-
-Editar `.env` con tus credenciales de Neon:
+### **2. Configurar variables de entorno**
+Crear archivo `.env` en la raíz:
 ```env
-PGHOST=tu-host.neon.tech
-PGDATABASE=neondb
-PGUSER=neondb_owner
-PGPASSWORD=tu_password_neon
-JWT_SECRET=tu_clave_secreta_muy_segura
+# Database (Neon PostgreSQL)
+PGHOST=tu-host-neon.aws.neon.tech
+PGDATABASE=tu-database
+PGUSER=tu-usuario
+PGPASSWORD=tu-password
+
+# JWT
+JWT_SECRET=tu-jwt-secret-muy-seguro
+
+# Server
 PORT=9000
 ```
 
-### 4. Configurar base de datos Neon (PostgreSQL remoto)
-1. Ve a [Neon](https://neon.tech/) y crea una cuenta gratuita
-2. Crea un nuevo proyecto
-3. Copia las credenciales de conexión a tu archivo `.env`
-4. ¡No necesitas instalar PostgreSQL localmente!
-
-### 5. Poblar la base de datos
-```bash
-npm run seed
-```
-
-Este comando:
-- Crea las tablas automáticamente
-- Inserta 10 platos de ejemplo
-- Crea 3 usuarios (1 admin + 2 usuarios regulares)
-- Crea 2 pedidos de ejemplo
-
-## Ejecutar la aplicación
-
-### Modo desarrollo
-```bash
-npm run dev
-```
-
-### Modo producción
+### **3. Iniciar Backend**
 ```bash
 npm start
+# Servidor corriendo en http://localhost:9000
 ```
 
-La API estará disponible en: `http://localhost:9000`
-
-## Usuarios de prueba
-
-### Administrador
-- **Email**: admin@burgertic.com
-- **Password**: admin123
-
-### Usuario regular
-- **Email**: juan.perez@email.com
-- **Password**: 123456
-
-## Estructura de la API
-
-### Autenticación
-| Método | Ruta | Descripción | Acceso |
-|--------|------|-------------|---------|
-| POST | `/auth/register` | Registrar usuario | Público |
-| POST | `/auth/login` | Iniciar sesión | Público |
-
-### Platos
-| Método | Ruta | Descripción | Acceso |
-|--------|------|-------------|---------|
-| GET | `/platos` | Listar todos los platos | Público |
-| GET | `/platos/:id` | Obtener plato por ID | Público |
-| GET | `/platos/tipo/:tipo` | Platos por tipo | Público |
-| POST | `/platos` | Crear plato | Admin |
-| PUT | `/platos/:id` | Actualizar plato | Admin |
-| DELETE | `/platos/:id` | Eliminar plato | Admin |
-
-### Pedidos
-| Método | Ruta | Descripción | Acceso |
-|--------|------|-------------|---------|
-| GET | `/pedidos` | Listar todos los pedidos | Admin |
-| GET | `/pedidos/usuario` | Pedidos del usuario autenticado | Usuario |
-| GET | `/pedidos/:id` | Obtener pedido por ID | Admin |
-| POST | `/pedidos` | Crear pedido | Usuario |
-| PUT | `/pedidos/:id/aceptar` | Aceptar pedido | Admin |
-| PUT | `/pedidos/:id/comenzar` | Comenzar pedido | Admin |
-| PUT | `/pedidos/:id/entregar` | Entregar pedido | Admin |
-| DELETE | `/pedidos/:id` | Eliminar pedido | Admin |
-
-## Ejemplos de uso
-
-### 1. Registro de usuario
+### **4. Configurar Frontend**
 ```bash
-curl -X POST http://localhost:9000/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nombre": "Ana",
-    "apellido": "García", 
-    "email": "ana@email.com",
-    "password": "123456"
-  }'
+cd FRONTEND
+npm install
+npm run dev
+# Frontend corriendo en http://localhost:3000
 ```
 
-### 2. Login
+---
+
+## 🏗️ **Arquitectura del Proyecto**
+
+### **Backend (Node.js + Express)**
+```
+├── controllers/     # Lógica de endpoints
+├── services/        # Lógica de negocio
+├── models/          # Modelos Sequelize
+├── middlewares/     # Auth y validaciones
+├── routes/          # Definición de rutas
+├── db.js           # Configuración de base de datos
+└── index.js        # Punto de entrada
+```
+
+### **Frontend (Next.js)**
+```
+├── pages/          # Rutas y páginas
+├── components/     # Componentes reutilizables
+├── services/       # APIs y servicios
+└── styles/         # CSS modules
+```
+
+---
+
+## 📊 **Base de Datos (Sequelize + PostgreSQL)**
+
+### **Tablas implementadas:**
+
+**usuarios**
+- `id` (PK, auto-increment)
+- `nombre`, `apellido`, `email`, `password`, `admin`
+
+**platos** 
+- `id` (PK, auto-increment)
+- `tipo` ("principal", "combo", "postre")
+- `nombre`, `precio`, `descripcion`
+
+**pedidos**
+- `id` (PK, auto-increment) 
+- `id_usuario` (FK → usuarios)
+- `fecha`, `estado` ("pendiente", "aceptado", "en camino", "entregado")
+
+**platosxpedidos** (tabla intermedia)
+- `id` (PK), `id_pedido` (FK), `id_plato` (FK), `cantidad`
+
+### **Relaciones Sequelize:**
+```javascript
+// One-to-Many
+Usuario.hasMany(Pedido, { foreignKey: 'id_usuario', as: 'pedidos' });
+Pedido.belongsTo(Usuario, { foreignKey: 'id_usuario', as: 'usuario' });
+
+// Many-to-Many através de tabla intermedia
+Pedido.belongsToMany(Plato, { through: PlatoXPedido, foreignKey: 'id_pedido', as: 'platos' });
+```
+
+---
+
+## 🔐 **Autenticación y Autorización**
+
+### **JWT Token**
+- **Duración:** 30 minutos
+- **Payload:** `{ id: usuario_id }`
+- **Header:** `Authorization: Bearer <token>`
+
+### **Middleware de Autenticación**
+```javascript
+export const verifyToken = async (req, res, next) => {
+    // Verifica token JWT y coloca usuario en req.usuario
+}
+
+export const verifyAdmin = async (req, res, next) => {
+    // Verifica que req.usuario.admin === true
+}
+```
+
+### **Hash de Contraseñas (bcryptjs)**
+```javascript
+// En modelo Usuario - hook beforeCreate
+beforeCreate: async (usuario) => {
+    const salt = await bcryptjs.genSalt(10);
+    usuario.password = await bcryptjs.hash(usuario.password, salt);
+}
+```
+
+---
+
+## 📡 **API REST Endpoints**
+
+### **Autenticación (Público)**
+- `POST /auth/register` - Registro de usuario
+- `POST /auth/login` - Login y generación de JWT
+
+### **Platos (Público para GET, Admin para CUD)**
+- `GET /platos` - Listar todos los platos
+- `GET /platos/:id` - Obtener plato por ID
+- `GET /platos/tipo/:tipo` - Filtrar platos por tipo
+- `POST /platos` 🔒 **Admin** - Crear plato
+- `PUT /platos/:id` 🔒 **Admin** - Actualizar plato
+- `DELETE /platos/:id` 🔒 **Admin** - Eliminar plato
+
+### **Pedidos (Autenticado/Admin)**
+- `GET /pedidos` 🔒 **Admin** - Todos los pedidos
+- `GET /pedidos/usuario` 🔒 **Usuario** - Mis pedidos
+- `POST /pedidos` 🔒 **Usuario** - Crear pedido
+- `PUT /pedidos/:id/aceptar` 🔒 **Admin** - Aceptar pedido
+- `PUT /pedidos/:id/comenzar` 🔒 **Admin** - Comenzar pedido
+- `PUT /pedidos/:id/entregar` 🔒 **Admin** - Entregar pedido
+- `DELETE /pedidos/:id` 🔒 **Admin** - Eliminar pedido
+
+---
+
+## 🎨 **Frontend - Funcionalidades**
+
+### **Páginas Públicas**
+- `/` - Landing page (Route 66 theme)
+- `/login` - Inicio de sesión
+- `/register` - Registro de usuario
+- `/platos` - Catálogo de hamburguesas
+- `/platos/[id]` - Detalle de plato
+
+### **Páginas de Cliente Autenticado**
+- `/mis-pedidos` - Ver mis pedidos con estados
+
+### **Páginas de Admin** 🔒
+- `/admin/setup` - CRUD de platos
+- `/admin-pedidos` - Gestión de todos los pedidos
+
+---
+
+## 🧪 **Testing y Usuarios de Prueba**
+
+### **Usuario Admin**
+```
+Email: admin@burgertic.com
+Password: admin123
+```
+
+### **Usuario Cliente** (crear via registro)
+```
+Cualquier email válido
+Password: mínimo 6 caracteres
+```
+
+### **Datos de prueba incluidos:**
+- 10+ platos de diferentes tipos
+- Usuarios de prueba
+- Pedidos de ejemplo
+
+---
+
+## 🎯 **Preguntas de Defensa - Respuestas Clave**
+
+### **¿Cómo funciona la conexión Frontend-Backend?**
+- Frontend (Next.js puerto 3000) → API calls → Backend (Express puerto 9000)
+- Servicio `api.js` centraliza todas las llamadas HTTP con Axios
+- JWT token enviado en header Authorization para rutas protegidas
+
+### **¿Cómo se aplican las Foreign Keys en Sequelize?**
+```javascript
+// Definición en modelo
+id_usuario: {
+    type: DataTypes.INTEGER,
+    references: { model: 'usuarios', key: 'id' }
+}
+
+// Asociaciones
+Usuario.hasMany(Pedido, { foreignKey: 'id_usuario' });
+Pedido.belongsTo(Usuario, { foreignKey: 'id_usuario', as: 'usuario' });
+```
+
+### **¿Qué ventajas presenta Sequelize?**
+- **Validación automática:** Tipos de datos, required, unique
+- **Parseo bidireccional:** JS Objects ↔ SQL
+- **Hooks:** beforeCreate para hash de passwords
+- **Asociaciones:** Include automático en queries
+- **Migraciones:** Sync de modelos con BD
+
+### **¿Cómo se probaron los endpoints?**
+- Postman para testing manual de APIs
+- Logs detallados en consola
+- Frontend integrado como prueba end-to-end
+- Testing de todos los flujos: registro → login → pedidos
+
+### **¿Dónde está la función que valida X condición?**
+- **Autenticación:** `middlewares/auth.middleware.js`
+- **Validación de pedidos:** `controllers/pedidos.controller.js` + `services/pedidos.service.js`
+- **Hash passwords:** `models/usuarios.model.js` (hook beforeCreate)
+- **Validación admin:** `middleware verifyAdmin()`
+
+---
+
+## ⚠️ **Solución de Problemas Comunes**
+
+### **Error: puerto 9000 ocupado**
 ```bash
-curl -X POST http://localhost:9000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@burgertic.com",
-    "password": "admin123"
-  }'
+# Cambiar puerto en index.js o matar proceso
+netstat -ano | findstr :9000
+taskkill /PID <numero> /F
 ```
 
-### 3. Listar platos
-```bash
-curl http://localhost:9000/platos
-```
+### **Error de base de datos**
+- Verificar variables de entorno en `.env`
+- Confirmar conexión a Neon Database
+- Revisar logs de Sequelize sync
 
-### 4. Crear pedido (requiere token)
-```bash
-curl -X POST http://localhost:9000/pedidos \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "platos": [
-      {"id": 1, "cantidad": 2},
-      {"id": 7, "cantidad": 1}
-    ]
-  }'
-```
+### **Error de CORS**
+- Backend configurado para aceptar `localhost:3000`
+- Verificar que frontend esté en puerto correcto
 
-### 5. Ver pedidos del usuario
-```bash
-curl http://localhost:9000/pedidos/usuario \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
+---
 
-## Estados de pedidos
-
-Los pedidos siguen este flujo de estados:
-1. **pendiente** → 2. **aceptado** → 3. **en camino** → 4. **entregado**
-
-## Validaciones implementadas
-
-- **Email único**: No se permiten emails duplicados
-- **Campos requeridos**: Validación de campos obligatorios
-- **Estados válidos**: Solo transiciones permitidas entre estados
-- **Autenticación**: Verificación de tokens JWT
-- **Autorización**: Control de acceso por roles
-- **Integridad referencial**: Foreign keys válidas
-
-## Testing de la API
-
-Se recomienda usar herramientas como:
-- **Postman**: Para testing manual de endpoints
-- **Thunder Client**: Extensión de VS Code
-- **curl**: Para testing desde línea de comandos
-
-### Collection de Postman
-Se puede crear una collection con las siguientes requests configuradas con las URLs y headers apropiados.
-
-## Solución de problemas
-
-### Error de conexión a la base de datos
-1. Verificar que PostgreSQL esté ejecutándose
-2. Confirmar que las credenciales en `.env` sean correctas
-3. Asegurarse de que la base de datos exista
-
-### Error de token inválido
-1. Verificar que el header Authorization tenga el formato: `Bearer <token>`
-2. Confirmar que el token no haya expirado (duración: 30 minutos)
-3. Asegurarse de usar el token correcto del login
-
-### Error de permisos
-1. Verificar que el usuario tenga los permisos necesarios
-2. Para operaciones de admin, usar el usuario administrador
+**🎓 Proyecto desarrollado siguiendo las consignas de BurgerTIC - TP5**
