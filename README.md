@@ -7,13 +7,6 @@
 
 ## **Instalación y Ejecución**
 
-### **Prerequisitos**
-```bash
-Node.js (v18 o superior)
-npm o yarn
-Cuenta en Neon Database (PostgreSQL)
-```
-
 ### **1. Clonar y configurar Backend**
 ```bash
 cd TP5-burgertic
