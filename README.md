@@ -1,11 +1,11 @@
-# 🍔 BurgerTIC - Sistema de Pedidos de Hamburguesas
+# BurgerTIC - Como se hizo
 
 **Tema elegido:** Route 66 American Diner  
 **Tecnologías:** Node.js + Express + PostgreSQL + Next.js + JWT + Sequelize
 
 ---
 
-## 🚀 **Instalación y Ejecución**
+## **Instalación y Ejecución**
 
 ### **Prerequisitos**
 ```bash
@@ -52,7 +52,7 @@ npm run dev
 
 ---
 
-## 🏗️ **Arquitectura del Proyecto**
+## **Arquitectura del Proyecto**
 
 ### **Backend (Node.js + Express)**
 ```
@@ -75,7 +75,7 @@ npm run dev
 
 ---
 
-## 📊 **Base de Datos (Sequelize + PostgreSQL)**
+## **Base de Datos (Sequelize + PostgreSQL)**
 
 ### **Tablas implementadas:**
 
@@ -108,7 +108,7 @@ Pedido.belongsToMany(Plato, { through: PlatoXPedido, foreignKey: 'id_pedido', as
 
 ---
 
-## 🔐 **Autenticación y Autorización**
+## **Autenticación y Autorización**
 
 ### **JWT Token**
 - **Duración:** 30 minutos
@@ -147,22 +147,22 @@ beforeCreate: async (usuario) => {
 - `GET /platos` - Listar todos los platos
 - `GET /platos/:id` - Obtener plato por ID
 - `GET /platos/tipo/:tipo` - Filtrar platos por tipo
-- `POST /platos` 🔒 **Admin** - Crear plato
-- `PUT /platos/:id` 🔒 **Admin** - Actualizar plato
-- `DELETE /platos/:id` 🔒 **Admin** - Eliminar plato
+- `POST /platos` **Admin** - Crear plato
+- `PUT /platos/:id` **Admin** - Actualizar plato
+- `DELETE /platos/:id` **Admin** - Eliminar plato
 
 ### **Pedidos (Autenticado/Admin)**
-- `GET /pedidos` 🔒 **Admin** - Todos los pedidos
-- `GET /pedidos/usuario` 🔒 **Usuario** - Mis pedidos
-- `POST /pedidos` 🔒 **Usuario** - Crear pedido
-- `PUT /pedidos/:id/aceptar` 🔒 **Admin** - Aceptar pedido
-- `PUT /pedidos/:id/comenzar` 🔒 **Admin** - Comenzar pedido
-- `PUT /pedidos/:id/entregar` 🔒 **Admin** - Entregar pedido
-- `DELETE /pedidos/:id` 🔒 **Admin** - Eliminar pedido
+- `GET /pedidos` **Admin** - Todos los pedidos
+- `GET /pedidos/usuario` **Usuario** - Mis pedidos
+- `POST /pedidos` **Usuario** - Crear pedido
+- `PUT /pedidos/:id/aceptar` **Admin** - Aceptar pedido
+- `PUT /pedidos/:id/comenzar` **Admin** - Comenzar pedido
+- `PUT /pedidos/:id/entregar` **Admin** - Entregar pedido
+- `DELETE /pedidos/:id` **Admin** - Eliminar pedido
 
 ---
 
-## 🎨 **Frontend - Funcionalidades**
+## **Frontend - Funcionalidades**
 
 ### **Páginas Públicas**
 - `/` - Landing page (Route 66 theme)
@@ -174,13 +174,13 @@ beforeCreate: async (usuario) => {
 ### **Páginas de Cliente Autenticado**
 - `/mis-pedidos` - Ver mis pedidos con estados
 
-### **Páginas de Admin** 🔒
+### **Páginas de Admin**
 - `/admin/setup` - CRUD de platos
 - `/admin-pedidos` - Gestión de todos los pedidos
 
 ---
 
-## 🧪 **Testing y Usuarios de Prueba**
+## **Testing y Usuarios de Prueba**
 
 ### **Usuario Admin**
 ```
@@ -201,7 +201,7 @@ Password: mínimo 6 caracteres
 
 ---
 
-## 🎯 **Preguntas de Defensa - Respuestas Clave**
+## **Preguntas de Defensa - Respuestas Clave**
 
 ### **¿Cómo funciona la conexión Frontend-Backend?**
 - Frontend (Next.js puerto 3000) → API calls → Backend (Express puerto 9000)
@@ -242,7 +242,7 @@ Pedido.belongsTo(Usuario, { foreignKey: 'id_usuario', as: 'usuario' });
 
 ---
 
-## ⚠️ **Solución de Problemas Comunes**
+## **Solución de Problemas Comunes**
 
 ### **Error: puerto 9000 ocupado**
 ```bash
