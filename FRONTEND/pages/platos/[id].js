@@ -22,7 +22,11 @@ export default function PlatoDetail(){
         console.log('Buscando plato con ID:', id);
         const p = await getPlatoById(id);
         console.log('Plato recibido:', p);
-        setPlato(p);
+        console.log('Es array?', Array.isArray(p));
+        // Si es array, tomar el primer elemento
+        const platoData = Array.isArray(p) ? p[0] : p;
+        console.log('Datos finales del plato:', platoData);
+        setPlato(platoData);
       } catch (error) {
         console.error('Error al cargar plato:', error);
         setMsg('❌ Error al cargar los detalles del plato');
@@ -60,8 +64,8 @@ export default function PlatoDetail(){
       
       setMsg(`🎉 ¡Pedido realizado exitosamente! 
       📋 Número de pedido: ${pedido.id}
-      🍔 ${cantidad}x ${plato?.nombre || 'Producto'}
-      💰 Total: $${(Number(plato?.precio || 0) * Number(cantidad)).toFixed(2)}`);
+      🍔 ${cantidad}x ${plato.nombre}
+      💰 Total: $${(plato.precio * cantidad).toFixed(2)}`);
       
       setTimeout(() => {
         router.push('/mis-pedidos');
@@ -84,7 +88,7 @@ export default function PlatoDetail(){
     }
   };
 
-  if (!plato || loadingData) return (
+  if (loadingData || !plato) return (
     <div>
       <Head>
         <title>Cargando... - Route 66 Burgers</title>
@@ -174,7 +178,7 @@ export default function PlatoDetail(){
               marginBottom: '10px',
               letterSpacing: '2px'
             }}>
-              {(plato?.nombre || 'Plato Delicioso').toUpperCase()}
+              {(plato.nombre || 'Cargando...').toUpperCase()}
             </h1>
             
             <p style={{
@@ -216,7 +220,7 @@ export default function PlatoDetail(){
                 fontWeight: 'bold',
                 textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
               }}>
-                ${Number(plato?.precio || 0).toFixed(2)}
+                ${(plato.precio || 0).toFixed(2)}
               </span>
             </div>
           </div>
@@ -312,7 +316,7 @@ export default function PlatoDetail(){
               color: '#ffd700',
               fontWeight: 'bold'
             }}>
-              💰 Total: ${(Number(plato?.precio || 0) * Number(cantidad)).toFixed(2)}
+              💰 Total: ${((plato.precio || 0) * cantidad).toFixed(2)}
             </div>
           </div>
 
