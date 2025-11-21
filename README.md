@@ -5,7 +5,165 @@
 
 ---
 
-## **Instalación y Ejecución**
+## 🛠️ **Flujo de Tecnologías - Cuándo se usa cada librería**
+
+### **📦 Backend - Flujo de Request**
+
+#### **1. EXPRESS.JS** - Servidor y Manejo de Rutas
+```javascript
+// index.js - Servidor principal
+const app = express();
+app.use('/platos', PlatosRouter);  // Rutas de platos
+app.use('/auth', AuthRouter);      // Rutas de autenticación
+app.use('/pedidos', PedidosRouter); // Rutas de pedidos
+app.listen(9000); // Servidor escuchando
+```
+**Se usa:** Para recibir requests HTTP, definir rutas y enviar responses
+
+#### **2. CORS** - Comunicación Frontend-Backend
+```javascript
+app.use(cors()); // Permite requests desde localhost:3000
+```
+**Se usa:** Para permitir que el frontend (puerto 3000) se comunique con el backend (puerto 9000)
+
+#### **3. SEQUELIZE** - Base de Datos y Modelos
+```javascript
+// models/usuarios.model.js - Definición del modelo
+export class Usuario extends Model {}
+Usuario.init({...}, { sequelize });
+
+// services/usuarios.service.js - Operaciones de BD
+const usuario = await Usuario.findOne({ where: { email } });
+const nuevoUsuario = await Usuario.create({...});
+```
+**Se usa:** Para definir tablas, realizar queries, manejar relaciones entre modelos
+
+#### **4. BCRYPTJS** - Hash de Contraseñas
+```javascript
+// models/usuarios.model.js - Hook beforeCreate
+beforeCreate: async (usuario) => {
+    const salt = await bcryptjs.genSalt(10);
+    usuario.password = await bcryptjs.hash(usuario.password, salt);
+}
+
+// services/usuarios.service.js - Validación
+const isValid = await bcryptjs.compare(password, usuario.password);
+```
+**Se usa:** Para hashear passwords al registrar y validar passwords al login
+
+#### **5. JSONWEBTOKEN (JWT)** - Autenticación
+```javascript
+// controllers/auth.controller.js - Crear token al login
+const token = jwt.sign(
+    { id: usuario.id }, 
+    process.env.JWT_SECRET, 
+    { expiresIn: '30m' }
+);
+
+// middlewares/auth.middleware.js - Verificar token
+const decoded = jwt.verify(token, process.env.JWT_SECRET);
+```
+**Se usa:** Para crear tokens al login y verificar identidad en rutas protegidas
+
+#### **6. DOTENV** - Variables de Entorno
+```javascript
+import 'dotenv/config';
+// Carga variables de .env para usar process.env.JWT_SECRET, process.env.PGHOST
+```
+**Se usa:** Para cargar configuración sensible (credenciales DB, secrets) sin hardcodear
+
+---
+
+### **🔄 Flujo Completo - Ejemplo: Usuario hace Login**
+
+```
+1. Frontend envía POST /auth/login
+   ↓
+2. EXPRESS recibe request en auth.router.js
+   ↓  
+3. CORS permite la comunicación cross-origin
+   ↓
+4. Controller valida email/password del body
+   ↓
+5. SEQUELIZE busca usuario en BD: Usuario.findOne()
+   ↓
+6. BCRYPTJS compara password: bcrypt.compare()
+   ↓
+7. JWT genera token: jwt.sign() con SECRET de DOTENV
+   ↓
+8. EXPRESS envía response con token y datos usuario
+   ↓
+9. Frontend guarda token para futuras requests
+```
+
+### **🔒 Flujo de Request Protegida - Ejemplo: Crear Pedido**
+
+```
+1. Frontend envía POST /pedidos con header Authorization
+   ↓
+2. EXPRESS recibe request en pedidos.router.js
+   ↓
+3. MIDDLEWARE verifyToken extrae token del header
+   ↓
+4. JWT verifica token: jwt.verify() con SECRET de DOTENV
+   ↓
+5. SEQUELIZE busca usuario: Usuario.findByPk(decoded.id)
+   ↓
+6. MIDDLEWARE coloca usuario en req.usuario
+   ↓
+7. Controller valida datos del pedido
+   ↓
+8. SEQUELIZE crea pedido y relaciones: Pedido.create(), PlatoXPedido.bulkCreate()
+   ↓
+9. EXPRESS envía response con pedido creado
+```
+
+### **🏗️ Frontend - Flujo de Tecnologías**
+
+#### **NEXT.JS** - Framework y Routing
+```javascript
+// pages/login.js - Página automática por ubicación
+export default function Login() { ... }
+// Routing automático: /login → pages/login.js
+```
+
+#### **REACT** - Componentes e Interactividad
+```javascript
+// Hooks para estado y efectos
+const [user, setUser] = useState(null);
+useEffect(() => { checkAuth(); }, []);
+```
+
+#### **AXIOS** - Comunicación con API
+```javascript
+// services/api.js - Configuración centralizada
+const API = axios.create({ baseURL: 'http://localhost:9000' });
+// Interceptor automático para agregar token
+API.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+});
+```
+
+---
+
+### **📋 Resumen - Cuándo se usa cada librería:**
+
+| **Librería** | **Cuándo se usa** | **Ejemplo concreto** |
+|-------------|-------------------|---------------------|
+| **Express** | Cada request HTTP | `app.post('/auth/login', ...)` |
+| **CORS** | Cross-origin requests | Frontend 3000 → Backend 9000 |
+| **Sequelize** | Operaciones de BD | `Usuario.findOne()`, `Pedido.create()` |
+| **bcryptjs** | Passwords | Registro (hash) y Login (compare) |
+| **JWT** | Autenticación | Login (crear) y rutas protegidas (verificar) |
+| **dotenv** | Config sensible | DB credentials, JWT secret |
+| **Next.js** | Routing y SSR | `/platos` → `pages/platos/index.js` |
+| **React** | UI interactiva | `useState`, `useEffect`, componentes |
+| **Axios** | HTTP requests | `API.post('/auth/login')` |
+
+---
+
+## 🚀 **Instalación y Ejecución**
 
 ### **1. Clonar y configurar Backend**
 ```bash
@@ -232,3 +390,41 @@ Pedido.belongsTo(Usuario, { foreignKey: 'id_usuario', as: 'usuario' });
 - **Validación de pedidos:** `controllers/pedidos.controller.js` + `services/pedidos.service.js`
 - **Hash passwords:** `models/usuarios.model.js` (hook beforeCreate)
 - **Validación admin:** `middleware verifyAdmin()`
+
+### **¿Cómo funciona el flujo de login Usuario Normal vs Admin?**
+
+#### **Usuario Normal (cliente):**
+1. **POST** `/auth/login` → Recibe token JWT + datos usuario
+2. **Frontend** guarda en localStorage: `token`, `userRole: "user"`
+3. **Navegación disponible:** Landing, platos, mis-pedidos
+4. **Puede:** Ver platos, crear pedidos, ver sus propios pedidos
+5. **NO puede:** Acceder a rutas `/admin/*`
+
+#### **Usuario Admin:**
+1. **POST** `/auth/login` → Recibe token JWT + datos usuario (`admin: true`)
+2. **Frontend** detecta `usuario.admin === true` → guarda `userRole: "admin"`
+3. **Header** muestra enlace "Setup" adicional
+4. **Navegación disponible:** Todo lo de usuario + panel admin
+5. **Puede:** CRUD platos, gestionar todos los pedidos, cambiar estados
+6. **Acceso:** `/admin/setup`, `/admin-pedidos`
+
+#### **Código clave:**
+```javascript
+// En login (frontend/pages/login.js)
+if (data.usuario.admin) {
+  localStorage.setItem('userRole', 'admin');
+} else {
+  localStorage.setItem('userRole', 'user');
+}
+
+// En Header (frontend/components/Header.js)
+{user.admin && (
+  <Link href="/admin/setup">Setup</Link>
+)}
+
+// En rutas admin (verificación)
+const userRole = localStorage.getItem('userRole');
+if (userRole !== 'admin') {
+  router.push('/');
+}
+```
