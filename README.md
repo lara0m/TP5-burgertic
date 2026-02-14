@@ -5,9 +5,9 @@
 
 ---
 
-## 🛠️ **Flujo de Tecnologías - Cuándo se usa cada librería**
+## **Flujo de Tecnologías - Cuándo se usa cada librería**
 
-### **📦 Backend - Flujo de Request**
+### ** Backend - Flujo de Request**
 
 #### **1. EXPRESS.JS** - Servidor y Manejo de Rutas
 ```javascript
@@ -74,7 +74,7 @@ import 'dotenv/config';
 
 ---
 
-### **🔄 Flujo Completo - Ejemplo: Usuario hace Login**
+### ** Flujo Completo - Ejemplo: Usuario hace Login**
 
 ```
 1. Frontend envía POST /auth/login
@@ -96,7 +96,7 @@ import 'dotenv/config';
 9. Frontend guarda token para futuras requests
 ```
 
-### **🔒 Flujo de Request Protegida - Ejemplo: Crear Pedido**
+### ** Flujo de Request Protegida - Ejemplo: Crear Pedido**
 
 ```
 1. Frontend envía POST /pedidos con header Authorization
@@ -118,7 +118,7 @@ import 'dotenv/config';
 9. EXPRESS envía response con pedido creado
 ```
 
-### **🏗️ Frontend - Flujo de Tecnologías**
+### ** Frontend - Flujo de Tecnologías**
 
 #### **NEXT.JS** - Framework y Routing
 ```javascript
@@ -147,7 +147,7 @@ API.interceptors.request.use((config) => {
 
 ---
 
-### **📋 Resumen - Cuándo se usa cada librería:**
+### ** Resumen - Cuándo se usa cada librería:**
 
 | **Librería** | **Cuándo se usa** | **Ejemplo concreto** |
 |-------------|-------------------|---------------------|
@@ -163,7 +163,7 @@ API.interceptors.request.use((config) => {
 
 ---
 
-## 🚀 **Instalación y Ejecución**
+## **Instalación y Ejecución**
 
 ### **1. Clonar y configurar Backend**
 ```bash
@@ -288,7 +288,7 @@ beforeCreate: async (usuario) => {
 
 ---
 
-## 📡 **API REST Endpoints**
+## **API REST Endpoints**
 
 ### **Autenticación (Público)**
 - `POST /auth/register` - Registro de usuario
